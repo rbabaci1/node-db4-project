@@ -5,5 +5,8 @@ module.exports = {
       filename: "./data/recipeBook.db",
     },
     useNullAsDefault: true,
+    migrations: {
+      directory: "./data/migrations",
+    },
   },
 };
