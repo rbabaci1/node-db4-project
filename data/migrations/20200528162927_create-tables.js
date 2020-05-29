@@ -32,7 +32,7 @@ exports.up = function (knex) {
         .onUpdate("CASCADE");
 
       tbl.float("ingredient_quantity").notNullable();
-      tbl.primary(["ingredient_id", "recipe_id", "ingredient_quantity"]);
+      tbl.primary(["ingredient_id", "recipe_id"]);
     })
     .createTable("instructions", tbl => {
       tbl.increments();
