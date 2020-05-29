@@ -13,7 +13,21 @@ const {
 
 const router = express.Router();
 
-router.post("/", async (req, res, next) => {});
+router.post("/", validateBody, async (req, res, next) => {
+  try {
+    const [addedRecipeId] = await addRecipe(req.body);
+    const addedRecipe = await getRecipeById(addedRecipeId);
+
+    res.status(201).json({ addedRecipe });
+  } catch ({ errno, code, message }) {
+    next({
+      message: "The recipe could not be added at this moment.",
+      errno,
+      code,
+      reason: message,
+    });
+  }
+});
 
 router.get("/", async (req, res, next) => {
   try {
