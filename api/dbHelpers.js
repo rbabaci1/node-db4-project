@@ -4,9 +4,9 @@ const getRecipes = () => db("recipes");
 
 const getShoppingList = recipe_id => {
   return db("recipes as r")
-    .select("recipes.*", "ri.ingredient_id", "ri.ingredient_quantity")
-    .join("recipe_ingredient as ri", "r.id", "ri.recipe_id")
-    .where({ recipe_id });
+    .select("ir.ingredient_id", "ir.ingredient_quantity")
+    .join("ingredient_recipe as ir", "r.id", "ir.recipe_id")
+    .where({ id: recipe_id });
 };
 
 module.exports = { getRecipes, getShoppingList };
