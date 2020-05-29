@@ -15,12 +15,7 @@ const getShoppingList = recipe_id => {
 };
 
 const getInstructions = recipe_id => {
-  return db("recipe_instructions as r_i")
-    .select("i.*", "r_i.step_number")
-    .join("recipes as r", "r_i.recipe_id", "r.id")
-    .join("instructions as i", "r_i.instruction_id", "i.id")
-    .where({ recipe_id })
-    .orderBy("step_number");
+  return db("instructions").where({ recipe_id }).orderBy("step_number");
 };
 
 const getSingleIngredientRecipe = ingredient_id => {
