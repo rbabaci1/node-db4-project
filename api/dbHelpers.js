@@ -1,5 +1,7 @@
 const db = require("../data/dbConfig");
 
+const addRecipe = newRecipe => db("recipes").insert(newRecipe);
+
 const getRecipes = () => db("recipes");
 
 const getRecipeById = id => db("recipes").where({ id }).first();
@@ -27,6 +29,7 @@ const getSingleIngredientRecipe = ingredient_id => {
 };
 
 module.exports = {
+  addRecipe,
   getRecipes,
   getRecipeById,
   getIngredientById,
