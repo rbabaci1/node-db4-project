@@ -1,6 +1,11 @@
 const express = require("express");
 
-const { getRecipes, getRecipeById, getShoppingList } = require("./dbHelpers");
+const {
+  getRecipes,
+  getRecipeById,
+  getShoppingList,
+  getInstructions,
+} = require("./dbHelpers");
 
 const router = express.Router();
 
@@ -28,6 +33,22 @@ router.get("/:id/shoppingList", validateId, async (req, res, next) => {
   } catch ({ errno, code, message }) {
     next({
       message: "The recipe ingredients could not be retrieved at this moment.",
+      errno,
+      code,
+      reason: message,
+    });
+  }
+});
+
+router.get("/:id/instructions", validateId, async (req, res, next) => {
+  try {
+    const { params, recipe } = req;
+    const instructions = await getInstructions(params.id);
+
+    res.status(200).json({ recipe_name: recipe.name, instructions });
+  } catch ({ errno, code, message }) {
+    next({
+      message: "The recipe instructions could not be retrieved at this moment.",
       errno,
       code,
       reason: message,

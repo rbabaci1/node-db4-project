@@ -17,7 +17,8 @@ const getInstructions = recipe_id => {
     .select("i.*", "r_i.step_number")
     .join("recipes as r", "r_i.recipe_id", "r.id")
     .join("instructions as i", "r_i.instruction_id", "i.id")
-    .where({ recipe_id });
+    .where({ recipe_id })
+    .orderBy("step_number");
 };
 
 module.exports = {
