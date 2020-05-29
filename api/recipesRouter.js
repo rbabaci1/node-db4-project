@@ -3,6 +3,7 @@ const express = require("express");
 const {
   getRecipes,
   getRecipeById,
+  getIngredientById,
   getShoppingList,
   getInstructions,
   getSingleIngredientRecipe,
@@ -25,94 +26,116 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id/shoppingList", validateId, async (req, res, next) => {
-  try {
-    const { params, recipe } = req;
-    const ingredients = await getShoppingList(params.id);
+router.get(
+  "/:id/shoppingList",
+  validateId("recipes"),
+  async (req, res, next) => {
+    try {
+      const { params, recipe } = req;
+      const ingredients = await getShoppingList(params.id);
 
-    res
-      .status(200)
-      .json(
-        ingredients.length
-          ? { recipe_name: recipe.name, ingredients }
-          : { message: "No ingredients available for the specified recipe." }
-      );
-  } catch ({ errno, code, message }) {
-    next({
-      message: "The recipe ingredients could not be retrieved at this moment.",
-      errno,
-      code,
-      reason: message,
-    });
-  }
-});
-
-router.get("/:id/instructions", validateId, async (req, res, next) => {
-  try {
-    const { params, recipe } = req;
-    const instructions = await getInstructions(params.id);
-
-    res
-      .status(200)
-      .json(
-        instructions.length
-          ? { recipe_name: recipe.name, instructions }
-          : { message: "No instructions available for the specified recipe." }
-      );
-  } catch ({ errno, code, message }) {
-    next({
-      message: "The recipe instructions could not be retrieved at this moment.",
-      errno,
-      code,
-      reason: message,
-    });
-  }
-});
-
-router.get("/ingredients/:id/recipes", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-
-    const recipes = await getSingleIngredientRecipe(id);
-
-    res
-      .status(200)
-      .json(
-        recipes.length
-          ? recipes
-          : { message: "No recipe available uses the specified ingredient" }
-      );
-  } catch ({ errno, code, message }) {
-    next({
-      message: "The recipes could not be retrieved at this moment.",
-      errno,
-      code,
-      reason: message,
-    });
-  }
-});
-
-/*********************  Validation Middleware ********************/
-async function validateId(req, res, next) {
-  try {
-    const { id } = req.params;
-    const recipe = await getRecipeById(id);
-
-    if (recipe) {
-      req.recipe = recipe;
-      next();
-    } else {
+      res
+        .status(200)
+        .json(
+          ingredients.length
+            ? { recipe_name: recipe.name, ingredients }
+            : { message: "No ingredients available for the specified recipe." }
+        );
+    } catch ({ errno, code, message }) {
       next({
-        status: 404,
-        message: `The recipe with the specified ID does not exist.`,
+        message:
+          "The recipe ingredients could not be retrieved at this moment.",
+        errno,
+        code,
+        reason: message,
       });
     }
-  } catch (err) {
-    next({
-      error: `The recipe info could not be retrieved at this moment.`,
-      reason: err.message,
-    });
   }
+);
+
+router.get(
+  "/:id/instructions",
+  validateId("recipes"),
+  async (req, res, next) => {
+    try {
+      const { params, recipe } = req;
+      const instructions = await getInstructions(params.id);
+
+      res
+        .status(200)
+        .json(
+          instructions.length
+            ? { recipe_name: recipe.name, instructions }
+            : { message: "No instructions available for the specified recipe." }
+        );
+    } catch ({ errno, code, message }) {
+      next({
+        message:
+          "The recipe instructions could not be retrieved at this moment.",
+        errno,
+        code,
+        reason: message,
+      });
+    }
+  }
+);
+
+router.get(
+  "/ingredients/:id/recipes",
+  validateId("ingredients"),
+  async (req, res, next) => {
+    try {
+      const { params, ingredient } = req;
+      const recipes = await getSingleIngredientRecipe(params.id);
+
+      res
+        .status(200)
+        .json(
+          recipes.length
+            ? { ingredient, recipes }
+            : { message: "No recipe available uses the specified ingredient" }
+        );
+    } catch ({ errno, code, message }) {
+      next({
+        message: "The recipes could not be retrieved at this moment.",
+        errno,
+        code,
+        reason: message,
+      });
+    }
+  }
+);
+
+/*********************  Validation Middleware ********************/
+function validateId(tableName) {
+  return async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const item =
+        tableName === "recipes"
+          ? await getRecipeById(id)
+          : await getIngredientById(id);
+
+      if (item) {
+        req[tableName === "recipes" ? "recipe" : "ingredient"] = item;
+        next();
+      } else {
+        next({
+          status: 404,
+          message: `The ${
+            tableName === "recipes" ? "recipe" : "ingredient"
+          } with the specified ID does not exist.`,
+        });
+      }
+    } catch (err) {
+      next({
+        error: `The ${
+          tableName === "recipes" ? "recipe" : "ingredient"
+        } info could not be retrieved at this moment.`,
+        reason: err.message,
+      });
+    }
+  };
 }
 
 module.exports = router;
