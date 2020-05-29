@@ -55,7 +55,7 @@ exports.up = function (knex) {
         .onUpdate("CASCADE");
 
       tbl.integer("step_number").notNullable();
-      tbl.primary(["recipe_id", "instruction_id", "step_number"]);
+      tbl.primary(["recipe_id", "step_number"]);
     });
 };
 
