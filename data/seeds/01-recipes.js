@@ -28,11 +28,6 @@ exports.seed = function (knex) {
           cuisine_type: "French",
           creator: "Itself",
         },
-        {
-          name: "New York Steak",
-          cuisine_type: "American",
-          creator: "Ramsey",
-        },
       ]);
     });
 };
