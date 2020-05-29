@@ -1,5 +1,6 @@
 const express = require("express");
 
+const { getUndefinedProps } = require("../utils");
 const {
   addRecipe,
   getRecipes,
@@ -139,6 +140,21 @@ function validateId(tableName) {
       });
     }
   };
+}
+
+function validateBody(req, res, next) {
+  const { name, cuisine_type, creator } = req.body;
+  const results = getUndefinedProps({ name, cuisine_type, creator });
+
+  if (!results) {
+    next();
+  } else {
+    res.status(400).json({
+      message: `👉🏼 [ ${results.join(
+        " | "
+      )} ] 👈🏼 missing or incorrectly defined in the request body.`,
+    });
+  }
 }
 
 module.exports = router;
