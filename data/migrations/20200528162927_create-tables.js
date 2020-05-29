@@ -31,11 +31,7 @@ exports.up = function (knex) {
         .onDelete("CASCADE")
         .onUpdate("CASCADE");
 
-      tbl
-        .float("ingredient_quantity")
-        .notNullable()
-        .onDelete("CASCADE")
-        .onUpdate("CASCADE");
+      tbl.float("ingredient_quantity").notNullable();
     })
     .createTable("instructions", tbl => {
       tbl.increments();
