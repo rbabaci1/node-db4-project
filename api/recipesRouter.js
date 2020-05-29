@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { getRecipes, getShoppingList } = require("./dbHelpers");
+const { getRecipes, getRecipeById, getShoppingList } = require("./dbHelpers");
 
 const router = express.Router();
 
@@ -19,12 +19,12 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id/shoppingList", async (req, res, next) => {
+router.get("/:id/shoppingList", validateId, async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const list = await getShoppingList(id);
+    const { params, recipe } = req;
+    const ingredients = await getShoppingList(params.id);
 
-    res.status(200).json(list);
+    res.status(200).json({ recipe_name: recipe.name, ingredients });
   } catch ({ errno, code, message }) {
     next({
       message: "The recipe ingredients could not be retrieved at this moment.",
@@ -39,7 +39,7 @@ router.get("/:id/shoppingList", async (req, res, next) => {
 async function validateId(req, res, next) {
   try {
     const { id } = req.params;
-    const recipe = await getById(id);
+    const recipe = await getRecipeById(id);
 
     if (recipe) {
       req.recipe = recipe;
