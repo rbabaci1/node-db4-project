@@ -40,17 +40,18 @@ exports.up = function (knex) {
     })
     .createTable("instructions_recipe", tbl => {
       tbl
-        .integer("recipe_id")
-        .notNullable()
-        .references("id")
-        .inTable("recipes")
-        .onDelete("CASCADE")
-        .onUpdate("CASCADE");
-      tbl
         .integer("instruction_id")
         .notNullable()
         .references("id")
         .inTable("instructions")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE");
+
+      tbl
+        .integer("recipe_id")
+        .notNullable()
+        .references("id")
+        .inTable("recipes")
         .onDelete("CASCADE")
         .onUpdate("CASCADE");
 
