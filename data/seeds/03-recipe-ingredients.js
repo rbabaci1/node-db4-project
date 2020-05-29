@@ -8,7 +8,7 @@ exports.seed = function (knex) {
         { ingredient_id: 2, recipe_id: 3, quantity: 22.1 },
         { ingredient_id: 2, recipe_id: 4, quantity: 22.1 },
         { ingredient_id: 3, recipe_id: 5, quantity: 22.1 },
-        { ingredient_id: 2, recipe_id: 1, quantity: 22.1 },
+        { ingredient_id: 2, recipe_id: 2, quantity: 22.1 },
       ]);
     });
 };

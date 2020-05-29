@@ -25,8 +25,8 @@ const getSingleIngredientRecipe = ingredient_id => {
   return db("recipe_ingredients as r_i")
     .select("r.*")
     .join("recipes as r", "r_i.recipe_id", "r.id")
-    .join("ingredients as i", "r_i.ingredient_id", "i.id");
-  // .where()
+    .join("ingredients as i", "r_i.ingredient_id", "i.id")
+    .where({ ingredient_id });
 };
 
 module.exports = {

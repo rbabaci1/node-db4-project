@@ -30,7 +30,13 @@ router.get("/:id/shoppingList", validateId, async (req, res, next) => {
     const { params, recipe } = req;
     const ingredients = await getShoppingList(params.id);
 
-    res.status(200).json({ recipe_name: recipe.name, ingredients });
+    res
+      .status(200)
+      .json(
+        ingredients.length
+          ? { recipe_name: recipe.name, ingredients }
+          : { message: "No ingredients available for the specified recipe." }
+      );
   } catch ({ errno, code, message }) {
     next({
       message: "The recipe ingredients could not be retrieved at this moment.",
@@ -46,7 +52,13 @@ router.get("/:id/instructions", validateId, async (req, res, next) => {
     const { params, recipe } = req;
     const instructions = await getInstructions(params.id);
 
-    res.status(200).json({ recipe_name: recipe.name, instructions });
+    res
+      .status(200)
+      .json(
+        instructions.length
+          ? { recipe_name: recipe.name, instructions }
+          : { message: "No instructions available for the specified recipe." }
+      );
   } catch ({ errno, code, message }) {
     next({
       message: "The recipe instructions could not be retrieved at this moment.",
@@ -63,7 +75,13 @@ router.get("/ingredients/:id/recipes", async (req, res, next) => {
 
     const recipes = await getSingleIngredientRecipe(id);
 
-    res.status(200).json(recipes);
+    res
+      .status(200)
+      .json(
+        recipes.length
+          ? recipes
+          : { message: "No recipe available uses the specified ingredient" }
+      );
   } catch ({ errno, code, message }) {
     next({
       message: "The recipes could not be retrieved at this moment.",
