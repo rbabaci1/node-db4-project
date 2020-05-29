@@ -4,6 +4,8 @@ const getRecipes = () => db("recipes");
 
 const getRecipeById = id => db("recipes").where({ id }).first();
 
+const getIngredientById = id => db("ingredients").where({ id }).first();
+
 const getShoppingList = recipe_id => {
   return db("recipe_ingredients as r_i")
     .select("i.*", "r_i.quantity")
@@ -32,6 +34,7 @@ const getSingleIngredientRecipe = ingredient_id => {
 module.exports = {
   getRecipes,
   getRecipeById,
+  getIngredientById,
   getShoppingList,
   getInstructions,
   getSingleIngredientRecipe,
