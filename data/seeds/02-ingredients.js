@@ -3,11 +3,11 @@ exports.seed = function (knex) {
     .del()
     .then(function () {
       return knex("ingredients").insert([
-        { id: 1, name: "Olive Oil", color: "Yellow" },
-        { id: 2, name: "Salt", color: "White" },
-        { id: 3, name: "Garlic", color: "White" },
-        { id: 4, name: "Black Peppers", color: "Black" },
-        { id: 5, name: "Potatoes", color: "Brown" },
+        { name: "Olive Oil", color: "Yellow" },
+        { name: "Salt", color: "White" },
+        { name: "Garlic", color: "White" },
+        { name: "Black Peppers", color: "Black" },
+        { name: "Potatoes", color: "Brown" },
       ]);
     });
 };
