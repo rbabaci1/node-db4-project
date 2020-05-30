@@ -31,11 +31,18 @@ router.post("/", validateBody("recipes"), async (req, res, next) => {
 });
 
 router.post(
-  "/ingredient",
+  "/:id/ingredient",
+  validateBody("recipes"),
   validateBody("ingredients"),
   async (req, res, next) => {
     try {
-      const [addedIngredientId] = await addIngredient(req.body);
+      const { id } = req.params;
+      const newIngredient = { recipe_id: id, ...req.body };
+
+      const [addedIngredientId] = await addIngredient(newIngredient);
+      const addedIngredient = await getIngredientById(addedIngredientId);
+
+      res.status(201).json(addedIngredient);
     } catch ({ errno, code, message }) {
       next({
         message: "The ingredient could not be added at this moment.",

@@ -2,13 +2,14 @@ const db = require("../data/dbConfig");
 
 const addRecipe = newRecipe => db("recipes").insert(newRecipe);
 
-const addIngredient = async newIngredient => {
-  const [ingredient_id] = await db("ingredients").insert(newIngredient);
-
-  await db("recipe_ingredient").insert({
-    recipe_id: newIngredient.recipe_id,
-    ingredient_id,
+const addIngredient = async ({ recipe_id, name, quantity, color }) => {
+  const [ingredient_id] = await db("ingredients").insert({
+    name,
+    quantity,
+    color,
   });
+
+  await db("recipe_ingredient").insert({ recipe_id, ingredient_id });
 
   return ingredient_id;
 };
