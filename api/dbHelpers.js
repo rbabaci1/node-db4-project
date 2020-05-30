@@ -2,16 +2,12 @@ const db = require("../data/dbConfig");
 
 const addRecipe = newRecipe => db("recipes").insert(newRecipe);
 
-const addIngredient = async ({ recipe_id, name, quantity, color }) => {
-  const [ingredient_id] = await db("ingredients").insert({
-    name,
-    quantity,
-    color,
-  });
+const addIngredient = newIngredient => {
+  return db("ingredients").insert(newIngredient);
+};
 
-  await db("recipe_ingredient").insert({ recipe_id, ingredient_id });
-
-  return ingredient_id;
+const syncRecipeIngredients = ids => {
+  return db("recipe_ingredients").insert(ids);
 };
 
 const getRecipes = () => db("recipes");
@@ -22,7 +18,7 @@ const getIngredientById = id => db("ingredients").where({ id }).first();
 
 const getShoppingList = recipe_id => {
   return db("recipe_ingredients as r_i")
-    .select("i.*", "r_i.quantity")
+    .select("i.*")
     .join("recipes as r", "r_i.recipe_id", "r.id")
     .join("ingredients as i", "r_i.ingredient_id", "i.id")
     .where({ recipe_id });
@@ -43,6 +39,7 @@ const getSingleIngredientRecipe = ingredient_id => {
 module.exports = {
   addRecipe,
   addIngredient,
+  syncRecipeIngredients,
   getRecipes,
   getRecipeById,
   getIngredientById,

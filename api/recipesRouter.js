@@ -4,6 +4,7 @@ const { getUndefinedProps } = require("../utils");
 const {
   addRecipe,
   addIngredient,
+  syncRecipeIngredients,
   getRecipes,
   getRecipeById,
   getIngredientById,
@@ -32,17 +33,17 @@ router.post("/", validateBody("recipes"), async (req, res, next) => {
 
 router.post(
   "/:id/ingredient",
-  validateBody("recipes"),
+  validateId("recipes"),
   validateBody("ingredients"),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const newIngredient = { recipe_id: id, ...req.body };
+      const recipe_id = Number(req.params.id);
 
-      const [addedIngredientId] = await addIngredient(newIngredient);
-      const addedIngredient = await getIngredientById(addedIngredientId);
+      const [ingredient_id] = await addIngredient(req.body);
+      const addedIngredient = await getIngredientById(ingredient_id);
+      await syncRecipeIngredients({ recipe_id, ingredient_id });
 
-      res.status(201).json(addedIngredient);
+      res.status(201).json({ recipe_id, ...addedIngredient });
     } catch ({ errno, code, message }) {
       next({
         message: "The ingredient could not be added at this moment.",
@@ -183,12 +184,12 @@ function validateId(tableName) {
 
 function validateBody(tableName) {
   return (req, res, next) => {
-    const { name, cuisine_type, creator, recipe_id, quantity } = req.body;
+    const { name, cuisine_type, creator, quantity } = req.body;
 
     const results =
       tableName === "recipes"
         ? getUndefinedProps({ name, cuisine_type, creator })
-        : getUndefinedProps({ recipe_id, name, quantity });
+        : getUndefinedProps({ name, quantity });
 
     if (!results) {
       next();
