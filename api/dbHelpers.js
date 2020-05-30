@@ -2,13 +2,7 @@ const db = require("../data/dbConfig");
 
 const addRecipe = newRecipe => db("recipes").insert(newRecipe);
 
-const addIngredient = newIngredient => {
-  return db("ingredients").insert(newIngredient);
-};
-
-const syncRecipeIngredients = ids => {
-  return db("recipe_ingredients").insert(ids);
-};
+const addIngredient = newIngredient => {};
 
 const getRecipes = () => db("recipes");
 
@@ -39,7 +33,7 @@ const getSingleIngredientRecipe = ingredient_id => {
 module.exports = {
   addRecipe,
   addIngredient,
-  syncRecipeIngredients,
+
   getRecipes,
   getRecipeById,
   getIngredientById,

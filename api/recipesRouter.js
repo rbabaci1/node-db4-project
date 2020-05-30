@@ -4,7 +4,6 @@ const { getUndefinedProps } = require("../utils");
 const {
   addRecipe,
   addIngredient,
-  syncRecipeIngredients,
   getRecipes,
   getRecipeById,
   getIngredientById,
@@ -37,13 +36,7 @@ router.post(
   validateBody("ingredients"),
   async (req, res, next) => {
     try {
-      const recipe_id = Number(req.params.id);
-
-      const [ingredient_id] = await addIngredient(req.body);
-      const addedIngredient = await getIngredientById(ingredient_id);
-      await syncRecipeIngredients({ recipe_id, ingredient_id });
-
-      res.status(201).json({ recipe_id, ...addedIngredient });
+      // todo
     } catch ({ errno, code, message }) {
       next({
         message: "The ingredient could not be added at this moment.",
