@@ -13,7 +13,7 @@ const {
 
 const router = express.Router();
 
-router.post("/", validateBody, async (req, res, next) => {
+router.post("/", validateBody("recipes"), async (req, res, next) => {
   try {
     const [addedRecipeId] = await addRecipe(req.body);
     const addedRecipe = await getRecipeById(addedRecipeId);
@@ -28,6 +28,13 @@ router.post("/", validateBody, async (req, res, next) => {
     });
   }
 });
+
+router.post(
+  "/:id/ingredient",
+  validateId,
+  validateBody("ingredients"),
+  async (req, res, next) => {}
+);
 
 router.get("/", async (req, res, next) => {
   try {
@@ -156,19 +163,25 @@ function validateId(tableName) {
   };
 }
 
-function validateBody(req, res, next) {
-  const { name, cuisine_type, creator } = req.body;
-  const results = getUndefinedProps({ name, cuisine_type, creator });
+function validateBody(tableName) {
+  return (req, res, next) => {
+    const { name, cuisine_type, creator, color, quantity } = req.body;
 
-  if (!results) {
-    next();
-  } else {
-    res.status(400).json({
-      message: `👉🏼 [ ${results.join(
-        " | "
-      )} ] 👈🏼 missing or incorrectly defined in the request body.`,
-    });
-  }
+    const results =
+      tableName === "recipes"
+        ? getUndefinedProps({ name, cuisine_type, creator })
+        : getUndefinedProps({ name, color, quantity });
+
+    if (!results) {
+      next();
+    } else {
+      res.status(400).json({
+        message: `👉🏼 [ ${results.join(
+          " | "
+        )} ] 👈🏼 missing or incorrectly defined in the request body.`,
+      });
+    }
+  };
 }
 
 module.exports = router;
