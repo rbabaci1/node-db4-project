@@ -10,6 +10,7 @@ exports.up = function (knex) {
     .createTable("ingredients", tbl => {
       tbl.increments();
       tbl.string("name").notNullable().unique();
+      tbl.float("quantity").notNullable();
       tbl.string("color", 128);
     })
     .createTable("instructions", tbl => {
@@ -46,7 +47,6 @@ exports.up = function (knex) {
         .onDelete("CASCADE")
         .onUpdate("CASCADE");
 
-      tbl.float("quantity").notNullable();
       tbl.primary(["ingredient_id", "recipe_id"]);
     });
 };
