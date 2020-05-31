@@ -2,7 +2,9 @@ const db = require("../data/dbConfig");
 
 const addRecipe = newRecipe => db("recipes").insert(newRecipe);
 
-const addIngredient = newIngredient => {};
+const addIngredient = newIngredient => db("ingredients").insert(newIngredient);
+
+const updateRecipeIngredient = ids => db("recipe_ingredients").insert(ids);
 
 const getRecipes = () => db("recipes");
 
@@ -33,7 +35,7 @@ const getSingleIngredientRecipe = ingredient_id => {
 module.exports = {
   addRecipe,
   addIngredient,
-
+  updateRecipeIngredient,
   getRecipes,
   getRecipeById,
   getIngredientById,
