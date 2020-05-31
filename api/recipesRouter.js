@@ -135,7 +135,9 @@ router.get(
   async (req, res, next) => {
     try {
       const { params, ingredient } = req;
-      const recipes = await getSingleIngredientRecipe(params.id);
+
+      const { name } = await getIngredientById(params.id);
+      const recipes = await getSingleIngredientRecipe(name);
 
       res
         .status(200)
