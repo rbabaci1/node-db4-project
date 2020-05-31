@@ -37,10 +37,15 @@ router.post(
   validateBody("ingredients"),
   async (req, res, next) => {
     try {
-      const recipe_id = Number(req.params.id);
+      const { body } = req;
+      const newIngredient = { ...body, ["name"]: body.name.toLowerCase() };
 
-      const [ingredient_id] = await addIngredient(req.body);
-      await updateRecipeIngredient({ recipe_id, ingredient_id });
+      const recipe_id = Number(req.params.id);
+      const ingredient_name = newIngredient.name;
+
+      await updateRecipeIngredient({ recipe_id, ingredient_name });
+
+      const [ingredient_id] = await addIngredient(newIngredient);
       const addedIngredient = await getIngredientById(ingredient_id);
 
       res.status(201).json(addedIngredient);

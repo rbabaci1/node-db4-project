@@ -4,7 +4,9 @@ const addRecipe = newRecipe => db("recipes").insert(newRecipe);
 
 const addIngredient = newIngredient => db("ingredients").insert(newIngredient);
 
-const updateRecipeIngredient = ids => db("recipe_ingredients").insert(ids);
+const updateRecipeIngredient = newPair => {
+  return db("recipe_ingredients").insert(newPair);
+};
 
 const getRecipes = () => db("recipes");
 
