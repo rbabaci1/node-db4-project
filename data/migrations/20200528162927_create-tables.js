@@ -39,15 +39,14 @@ exports.up = function (knex) {
         .onUpdate("CASCADE");
 
       tbl
-        .integer("ingredient_id")
-        .unsigned()
+        .string("ingredient_name", 128)
         .notNullable()
-        .references("id")
+        .references("name")
         .inTable("ingredients")
         .onDelete("CASCADE")
         .onUpdate("CASCADE");
 
-      tbl.primary(["recipe_id", "ingredient_id"]);
+      tbl.primary(["recipe_id", "ingredient_name"]);
     });
 };
 
